@@ -1,0 +1,50 @@
+{
+  "portal_url": "https://www.commbuys.com/bso/",
+  "search_url": "https://www.commbuys.com/bso/view/search/external/advancedSearchBid.xhtml",
+  "query_timestamp": "2026-02-13T14:30:00.000000",
+  "record_count": 1,
+  "search_term": "",
+  "data": [
+    {
+      "bid_number": "BD-25-1020-DCRFS-DC367-116264",
+      "description": "PSE01 - Mercedes Fire Hoses",
+      "bid_opening_date": "05/12/2025 05:00:00 PM",
+      "purchaser": "KARIM GLASGOW",
+      "organization": "Department of Conservation and Recreation",
+      "department": "DCRFS - DCR Forestry / STIP",
+      "location": "DC367 - DCR Forestry / STIP",
+      "fiscal_year": "25",
+      "type_code": "SS - Statewide Solicitation",
+      "alternate_id": "",
+      "required_date": "05/02/2025",
+      "available_date": "05/05/2025 08:00:00 AM",
+      "info_contact": "Andy Regan andy.regan@mass.gov",
+      "bid_type": "OPEN",
+      "purchase_method": "Open Market",
+      "allow_electronic_quote": "Yes",
+      "informal_bid_flag": "No",
+      "sbpp_eligible": "NO",
+      "bulletin": "DCR Fire Control is soliciting bids under the PSE01 Public Safety Equipment State Contract for the following Mercedes \"Fire Boss\" fire hose for the following sizes: 75\", 1\", 1.5\", 1.75\". Mercedes Booster Hose. Mercedes 2.5\" Hydrant Hose. Mercedes 3\" MTSS-800 hose. PSE01 vendors invited to view and respond. Please review and complete attached \"Fire Hose Bid Sheet\" to be considered for evaluation and award.",
+      "ship_to_address": "Ben Jennell, Fire Warden Bradley Palmer State Park Fire District 5 HQ 40 Asbury Street Topsfield, MA 01983 US Email: ben.jennell@mass.gov Phone: (857) 276-9653",
+      "bill_to_address": "Peter Lewandowski Department of Conservation & Recreation 10 Park Plaza Suite 6620 Boston, MA 02116 US Email: peter.lewandowski@mass.gov Phone: (508) 732-7714",
+      "attachments": [
+        {
+          "id": "1629465",
+          "name": "How to submit a bid in COMMBUYS~4.pdf"
+        },
+        {
+          "id": "2095248",
+          "name": "Fire Hose Bid Sheet.docx"
+        }
+      ],
+      "items": [
+        {
+          "item_number": "3",
+          "description": "DCR Fire Control is soliciting bids under the PSE01 Public Safety Equipment State Contract for the following Mercedes \"Fire Boss\" fire hose...",
+          "unspsc_code": "46-19-16 Fire fighting equipment"
+        }
+      ],
+      "portal_url": "https://www.commbuys.com/bso/external/bidDetail.sdo?docId=BD-25-1020-DCRFS-DC367-116264&external=true&parentUrl=close"
+    }
+  ]
+}
