@@ -326,4 +326,4 @@ Data comes from the Massachusetts COMMBUYS procurement portal, managed by the Op
 
 ## License
 
-AGPL
+BSD-4-Clause 
