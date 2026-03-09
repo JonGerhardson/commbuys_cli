@@ -828,33 +828,61 @@ def get_po_detail(client, doc_id, release=0):
     return detail
 
 
-def download_attachment(client, doc_id, attachment_id, output_path=None):
-    """Download a file attachment from a bid detail page.
+def download_attachment(client, doc_id, attachment_id, output_path=None, release=0):
+    """Download a file attachment from a bid or PO detail page.
 
     Steps:
-      1. GET the bid detail page to establish session and get CSRF token
-      2. POST to bidDetail.sda with download form fields
+      1. GET the detail page to establish session and get CSRF token
+      2. POST to the appropriate download endpoint with form fields
       3. Save binary content to output path
+
+    For bid attachments (BD-*): uses bidDetail.sdo / bidDetail.sda
+    For PO attachments (PO-*): uses poSummary.sda with releaseNbr
     """
-    # Step 1: GET bid detail page for session + CSRF
-    params = {
-        "docId": doc_id,
-        "external": "true",
-        "parentUrl": "close",
-    }
-    page_html = client.get(BID_DETAIL_URL, params)
-    tokens = client._extract_tokens(page_html)
+    is_po = doc_id.upper().startswith("PO-")
 
-    # Step 2: POST download request
-    form_data = {
-        "docId": doc_id,
-        "downloadFileNbr": attachment_id,
-        "mode": "download",
-    }
-    if "_csrf" in tokens:
-        form_data["_csrf"] = tokens["_csrf"]
+    if is_po:
+        # Step 1: GET PO detail page for session + CSRF
+        params = {
+            "docId": doc_id,
+            "releaseNbr": str(release),
+            "external": "true",
+            "parentUrl": "close",
+        }
+        page_html = client.get(PO_DETAIL_URL, params)
+        tokens = client._extract_tokens(page_html)
 
-    content, server_filename = client.download_file(BID_DETAIL_DOWNLOAD_URL, form_data)
+        # Step 2: POST download request to poSummary.sda
+        form_data = {
+            "docId": doc_id,
+            "releaseNbr": str(release),
+            "downloadFileNbr": attachment_id,
+            "mode": "download",
+        }
+        if "_csrf" in tokens:
+            form_data["_csrf"] = tokens["_csrf"]
+
+        content, server_filename = client.download_file(PO_DETAIL_URL, form_data)
+    else:
+        # Step 1: GET bid detail page for session + CSRF
+        params = {
+            "docId": doc_id,
+            "external": "true",
+            "parentUrl": "close",
+        }
+        page_html = client.get(BID_DETAIL_URL, params)
+        tokens = client._extract_tokens(page_html)
+
+        # Step 2: POST download request to bidDetail.sda
+        form_data = {
+            "docId": doc_id,
+            "downloadFileNbr": attachment_id,
+            "mode": "download",
+        }
+        if "_csrf" in tokens:
+            form_data["_csrf"] = tokens["_csrf"]
+
+        content, server_filename = client.download_file(BID_DETAIL_DOWNLOAD_URL, form_data)
 
     # Determine output filename
     if not output_path:
@@ -1137,9 +1165,11 @@ def build_parser():
     po_parser.add_argument("--url", action="store_true", help="Show browser URL")
 
     # --- download command ---
-    dl_parser = subparsers.add_parser("download", help="Download a bid attachment file")
-    dl_parser.add_argument("doc_id", help="Bid document ID (e.g., BD-25-1020-DCRFS-DC367-116264)")
+    dl_parser = subparsers.add_parser("download", help="Download a bid or PO attachment file")
+    dl_parser.add_argument("doc_id", help="Bid or PO document ID (e.g., BD-25-... or PO-19-...)")
     dl_parser.add_argument("attachment_id", help="Attachment file number ID")
+    dl_parser.add_argument("-r", "--release", type=int, default=0,
+                           help="Release number for PO attachments (default: 0)")
     dl_parser.add_argument("-o", "--output", help="Output file path (default: server filename)")
 
     # --- info command ---
@@ -1280,10 +1310,11 @@ def main():
             output_results([detail], args, "po_detail")
 
         elif args.command == "download":
+            release = getattr(args, "release", 0) or 0
             print(f"Downloading attachment {args.attachment_id} from {args.doc_id}...",
                   file=sys.stderr)
             filepath, size = download_attachment(
-                client, args.doc_id, args.attachment_id, args.output
+                client, args.doc_id, args.attachment_id, args.output, release=release
             )
             print(f"Saved to {filepath} ({size:,} bytes)")
 
