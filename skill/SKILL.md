@@ -31,7 +31,7 @@ simulating PrimeFaces AJAX requests against the JSF-based web interface.
 | `vendors` | Search registered vendors | `python commbuys.py vendors --search "Staples"` |
 | `po-detail` | Get purchase order details | `python commbuys.py po-detail PO-25-1080-OSD03-OSD03-36026` |
 | `po-detail` | Get a release PO from a blanket | `python commbuys.py po-detail PO-19-1080-OSD03-SRC01-17283 --release 31` |
-| `download` | Download a bid attachment | `python commbuys.py download BD-25-... 2095248 -o file.docx` |
+| `download` | Download a bid or PO attachment | `python commbuys.py download BD-25-... 2095248 -o file.docx` |
 | `info` | Show reference info | `python commbuys.py info urls` |
 
 ### Common Options
@@ -74,6 +74,49 @@ python commbuys.py po-detail PO-19-1080-OSD03-SRC01-17283 --release 31 --format 
 # Download attachment (get IDs from bid-detail --format json first)
 python commbuys.py download BD-25-1020-DCRFS-DC367-116264 2095248 -o "Bid Sheet.docx"
 ```
+
+## Logging & File Saving (Required)
+
+Always save query results and attachments. If there is no established output directory for the
+current investigation, ask the user before proceeding.
+
+### Save All Query Results
+
+Always use `--save-json` for list searches (bids, blankets, vendors):
+
+```bash
+python commbuys.py blankets --vendor "Blue Tactical" --save-json
+python commbuys.py bids --search "construction" --open --save-json
+```
+
+For detail queries (bid-detail, po-detail), save JSON explicitly with `-f json -o`:
+
+```bash
+python commbuys.py bid-detail BD-25-1080-OSD03-OSD03-107399 -f json -o /path/to/dir/BD-25-1080-OSD03-OSD03-107399.json
+python commbuys.py po-detail PO-25-1080-OSD03-OSD03-36026 --release 1 -f json -o /path/to/dir/PO-25-1080-OSD03-OSD03-36026_rel1.json
+```
+
+### Download All Attachments
+
+After every `bid-detail` call, download all attachments listed in the response to the output
+directory. Use the bid ID and attachment ID from the JSON output:
+
+```bash
+python commbuys.py download BD-25-1080-OSD03-OSD03-107399 2045511 -o /path/to/dir/CLT09_RFR.pdf
+python commbuys.py download BD-25-1080-OSD03-OSD03-107399 2123449 -o /path/to/dir/CLT09_Evaluation_Scores.pdf
+```
+
+For **PO/release PO attachments**, use `--release` to specify the release number:
+
+```bash
+# Download attachment from PO release 31 (e.g., ChatGPT contract)
+python commbuys.py download PO-19-1080-OSD03-SRC01-17283 2185657 --release 31 -o contract.pdf
+python commbuys.py download PO-19-1080-OSD03-SRC01-17283 2185658 --release 31 -o quote.pdf
+```
+
+The `download` command supports both bid attachments (`BD-*` via `bidDetail.sda`) and PO
+attachments (`PO-*` via `poSummary.sda`). For PO downloads, always pass `--release N` matching
+the release number used in `po-detail`.
 
 ## PrimeFaces AJAX Architecture
 
